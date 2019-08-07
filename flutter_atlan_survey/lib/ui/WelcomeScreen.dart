@@ -6,6 +6,7 @@ import 'package:flutter_atlan_survey/modals/SurveyFormResponse.dart';
 import 'package:flutter_atlan_survey/utils/AppConstants.dart';
 import 'package:flutter_atlan_survey/utils/AppSharedPref.dart';
 import 'package:flutter_atlan_survey/utils/CommonUtils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -50,6 +51,7 @@ class WelcomeScreenState extends State<StatefulWidget> {
     RestApiCalls apiCalls = new RestApiCalls();
 
     bool isNetworkConnected = await CommonUtils.isNetworkAvailable();
+    print("isNetworkConnected"+isNetworkConnected.toString());
 
     if (isNetworkConnected) {
       // Internet is connected
@@ -60,8 +62,10 @@ class WelcomeScreenState extends State<StatefulWidget> {
       return surveyFormResponse.toJson();
     } else {
       // Internet is disconnected
+      print("disconnected");
+      
       bool isData = await SharedPrefHelper().getWithDefault(AppConstants.IS_DATA_IN_DB, false);
-
+      print("isData: "+isData.toString());
       if (isData){
         // Form Data is available in local db
         // Now Fetch data from local db
@@ -97,8 +101,8 @@ class WelcomeScreenState extends State<StatefulWidget> {
     );
   }
 
-  String _fetchDataFromLocalDb() {
-    return new SurveyFormResponse().toJson().toString();
+  dynamic _fetchDataFromLocalDb() {
+    return new SurveyFormResponse().toJson();
   }
 
 

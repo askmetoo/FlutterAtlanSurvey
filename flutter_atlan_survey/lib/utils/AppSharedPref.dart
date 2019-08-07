@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefHelper {
 
-  SharedPreferences sharedPreferences;
+
 
   static final SharedPrefHelper _instance = SharedPrefHelper._internal();
   factory SharedPrefHelper() => _instance;
@@ -13,6 +13,7 @@ class SharedPrefHelper {
 
   // ignore: missing_return
   Future<dynamic> save(String key, dynamic value) async {
+    SharedPreferences sharedPreferences;
     sharedPreferences = await SharedPreferences.getInstance();
     if (value is int) {
       return await sharedPreferences.setInt(key, value) as dynamic;
@@ -28,14 +29,17 @@ class SharedPrefHelper {
   }
 
   Future<dynamic> get(String key) async {
+    SharedPreferences sharedPreferences;
     sharedPreferences = await SharedPreferences.getInstance();
     return await sharedPreferences.get(key) as Future<dynamic>;
   }
 
-  Future<dynamic> getWithDefault(String key, dynamic defValue) async {
+  dynamic getWithDefault(String key, dynamic defValue) async {
+    SharedPreferences sharedPreferences;
     sharedPreferences = await SharedPreferences.getInstance();
-    Future<dynamic> returnValue = sharedPreferences.get(key);
-    return returnValue == null ? defValue : await sharedPreferences.get(key);
+    dynamic returnValue = sharedPreferences.get(key);
+    print(returnValue);
+    return returnValue == null ? defValue : returnValue;
   }
 
 }
