@@ -61,8 +61,13 @@ class WelcomeScreenState extends State<StatefulWidget> {
       // Internet is connected
       SurveyFormResponse surveyFormResponse =
           await apiCalls.getSurveyForm().catchError((Object error) {
-        return "Error Occured";
+        CommonUtils.showToast(msg: "Data fetch failed",bgColor: Colors.red);
       });
+
+      if (surveyFormResponse == null){
+        return "Error Occured";
+      }
+
       return surveyFormResponse.toJson();
     } else {
       // Internet is disconnected

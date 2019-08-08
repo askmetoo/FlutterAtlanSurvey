@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_atlan_survey/modals/SurveyFormResponse.dart';
 
+import 'SurveyFormScreen.dart';
+
 class WelCome extends StatefulWidget {
   final SurveyFormResponse surveyFormResponse;
 
@@ -36,9 +38,10 @@ class WelcomeState extends State<WelCome> {
                     style: TextStyle(fontSize: 22, color: Colors.black),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top:20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: Text(
-                      surveyFormResponse.welcomeScreens[0].properties.description,
+                      surveyFormResponse
+                          .welcomeScreens[0].properties.description,
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 18, color: Colors.black),
@@ -47,14 +50,18 @@ class WelcomeState extends State<WelCome> {
                 ],
               ),
               Visibility(
-                  visible:
-                      surveyFormResponse.welcomeScreens[0].properties.showButton,
+                  visible: surveyFormResponse
+                      .welcomeScreens[0].properties.showButton,
                   child: ButtonTheme(
                     minWidth: 200,
                     child: FlatButton(
                         color: Colors.blue,
                         textColor: Colors.white,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SurveyFormScreen(
+                                  surveyFormResponse: surveyFormResponse)));
+                        },
                         child: Text(surveyFormResponse
                             .welcomeScreens[0].properties.buttonText)),
                   ))
