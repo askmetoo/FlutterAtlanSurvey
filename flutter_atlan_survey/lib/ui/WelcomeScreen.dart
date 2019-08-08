@@ -8,6 +8,8 @@ import 'package:flutter_atlan_survey/utils/AppSharedPref.dart';
 import 'package:flutter_atlan_survey/utils/CommonUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'WelcomeScreenWithButton.dart';
+
 class WelcomeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => WelcomeScreenState();
@@ -20,6 +22,10 @@ class WelcomeScreenState extends State<StatefulWidget> {
     return SafeArea(
       top: true,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text("Atlan Survey",style: TextStyle(color: Colors.blue),),
+        ),
         body: FutureBuilder(
           future: getFormData(),
           builder: (buildContext, snapShot) {
@@ -33,9 +39,7 @@ class WelcomeScreenState extends State<StatefulWidget> {
               }else {
                 SurveyFormResponse surveyFormResponse = SurveyFormResponse.fromJson(snapShot.data);
                 SharedPrefHelper().save(AppConstants.IS_DATA_IN_DB, true);
-                return Container(
-                  child: Text(surveyFormResponse.toJson().toString()),
-                );
+                return WelCome(surveyFormResponse);
               }
             } else {
               // UI show when while data is fetching
