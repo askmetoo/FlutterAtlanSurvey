@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_atlan_survey/api/RestApiCalls.dart';
-import 'package:flutter_atlan_survey/modals/SurveyFormResponse.dart';
+import 'package:flutter_atlan_survey/modals/SurveyFromResponse.dart';
 import 'package:flutter_atlan_survey/utils/AppConstants.dart';
 import 'package:flutter_atlan_survey/utils/AppSharedPref.dart';
 import 'package:flutter_atlan_survey/utils/CommonUtils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'WelcomeScreenWithButton.dart';
 
@@ -37,7 +36,7 @@ class WelcomeScreenState extends State<StatefulWidget> {
               } else if (snapShot.data.toString() == "false"){
                 return noInternetConnection();
               }else {
-                SurveyFormResponse surveyFormResponse = SurveyFormResponse.fromJson(snapShot.data);
+                SurveyResponse surveyFormResponse = SurveyResponse.fromJson(snapShot.data);
                 SharedPrefHelper().save(AppConstants.IS_DATA_IN_DB, true);
                 return WelCome(surveyFormResponse);
               }
@@ -59,7 +58,7 @@ class WelcomeScreenState extends State<StatefulWidget> {
 
     if (isNetworkConnected) {
       // Internet is connected
-      SurveyFormResponse surveyFormResponse =
+      SurveyResponse surveyFormResponse =
           await apiCalls.getSurveyForm().catchError((Object error) {
         CommonUtils.showToast(msg: "Data fetch failed",bgColor: Colors.red);
       });
@@ -67,6 +66,8 @@ class WelcomeScreenState extends State<StatefulWidget> {
       if (surveyFormResponse == null){
         return "Error Occured";
       }
+
+      await saveDataIntoDb(surveyFormResponse);
 
       return surveyFormResponse.toJson();
     } else {
@@ -78,7 +79,13 @@ class WelcomeScreenState extends State<StatefulWidget> {
       if (isData){
         // Form Data is available in local db
         // Now Fetch data from local db
-        return _fetchDataFromLocalDb();
+        final JsonDecoder _decoder = new JsonDecoder();
+        print("New");
+        String data = await _fetchDataFromLocalDb();
+        print("Kyaaaa"+data);
+        print("Old");
+        print(SurveyResponse.fromJson(_decoder.convert(data)));
+        return SurveyResponse.fromJson(_decoder.convert(data)).toJson();
       }else{
         // Form Data is not available (Please fetch data from api)
         return "false";
@@ -110,8 +117,8 @@ class WelcomeScreenState extends State<StatefulWidget> {
     );
   }
 
-  dynamic _fetchDataFromLocalDb() {
-    return new SurveyFormResponse().toJson();
+  Future<String> _fetchDataFromLocalDb() async {
+    return await SharedPrefHelper().getWithDefault(AppConstants.MAIN_FORM_DATA, new SurveyResponse().toJson().toString());
   }
 
 
@@ -200,6 +207,11 @@ class WelcomeScreenState extends State<StatefulWidget> {
         ),
       ),
     );
+  }
+
+  Future saveDataIntoDb(SurveyResponse surveyFormResponse) async {
+    print(jsonEncode(surveyFormResponse.toJson()));
+    await SharedPrefHelper().save(AppConstants.MAIN_FORM_DATA, jsonEncode(surveyFormResponse.toJson()));
   }
 
 }

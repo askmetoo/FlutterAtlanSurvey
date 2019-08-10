@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class CommonUtils{
+class CommonUtils {
   static Future<bool> isNetworkAvailable() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -28,24 +29,41 @@ class CommonUtils{
         textColor: Colors.white,
         fontSize: 13.0);
   }
-
 }
 
-class Validator{
-  static String validateEmail(String value) {
+class Validator {
+  final validateEmail =
+      StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
-      return 'Enter Valid Email';
+    if (regex.hasMatch(email))
+      sink.add(email);
     else
-      return null;
-  }
+      sink.addError('Enter a valid email');
+  });
 
-  static String isEmpty(String value) {
-    if (value.isEmpty)
-      return 'Please fill the field';
+  final validateEmpty =
+      StreamTransformer<String, String>.fromHandlers(handleData: (value, sink) {
+    if (value != "")
+      sink.add(value);
     else
-      return null;
-  }
+      sink.addError('Please fill the field');
+  });
+
+  final validatePhoneNumber =
+      StreamTransformer<String, String>.fromHandlers(handleData: (value, sink) {
+    if (value.length > 8 && value.length < 12)
+      sink.add(value);
+    else if (value.isEmpty) sink.addError('Please Enter valid phone number');
+  });
+
+  final validateRating =
+      StreamTransformer<double, double>.fromHandlers(handleData: (value, sink) {
+    if (value != 0.0)
+      sink.add(value);
+    else {
+      sink.addError('Please give Rating');
+    }
+  });
 }

@@ -38,7 +38,6 @@ class SharedPrefHelper {
     SharedPreferences sharedPreferences;
     sharedPreferences = await SharedPreferences.getInstance();
     dynamic returnValue = sharedPreferences.get(key);
-    print(returnValue);
     return returnValue == null ? defValue : returnValue;
   }
 

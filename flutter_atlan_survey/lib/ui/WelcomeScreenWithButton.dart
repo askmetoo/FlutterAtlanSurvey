@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_atlan_survey/modals/SurveyFormResponse.dart';
+import 'package:flutter_atlan_survey/modals/SurveyFromResponse.dart';
 
 import 'SurveyFormScreen.dart';
 
 class WelCome extends StatefulWidget {
-  final SurveyFormResponse surveyFormResponse;
+  final SurveyResponse surveyFormResponse;
 
   WelCome(this.surveyFormResponse);
 
@@ -13,7 +13,7 @@ class WelCome extends StatefulWidget {
 }
 
 class WelcomeState extends State<WelCome> {
-  SurveyFormResponse surveyFormResponse;
+  SurveyResponse surveyFormResponse;
 
   WelcomeState(this.surveyFormResponse);
 
@@ -51,14 +51,14 @@ class WelcomeState extends State<WelCome> {
               ),
               Visibility(
                   visible: surveyFormResponse
-                      .welcomeScreens[0].properties.showButton,
+                  .welcomeScreens[0].properties.showButton,
                   child: ButtonTheme(
                     minWidth: 200,
                     child: FlatButton(
                         color: Colors.blue,
                         textColor: Colors.white,
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
                               builder: (context) => SurveyFormScreen(
                                   surveyFormResponse: surveyFormResponse)));
                         },
